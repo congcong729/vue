@@ -1,4 +1,4 @@
 import ajax from './ajax'
-export const req_adress = (longitude,latitude)=>ajax(`/position/${longitude},${latitude}`)
+export const req_address = (longitude,latitude)=>ajax(`/position/${latitude},${longitude}`)
 export const req_categorys = ()=>ajax('/index_category')
-export const req_categorys = ({longitude,latitude})=>ajax('/shops')
+export const req_shops = ({longitude,latitude})=>ajax('/shops')

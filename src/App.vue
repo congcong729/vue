@@ -10,6 +10,9 @@ import FooterGuide from './components/FooterGuide/FooterGuide'
   export default {
     components:{
       FooterGuide
+    },
+    mounted(){
+      this.$store.dispatch('getaddress')
     }
   }
 </script>

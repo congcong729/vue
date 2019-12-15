@@ -1,3 +1,3 @@
-export const REQ_ADDRESS = 'req_address'
-export const REQ_CATEGORYS = 'req_categorys'
-export const REQ_SHOPS = 'req_shops'
+export const RECEIVE_ADDRESS = 'receive_address'
+export const RECEIVE_CATEGORYS = 'receive_categorys'
+export const RECEIVE_SHOPS = 'receive_shops'

@@ -49,14 +49,7 @@
                 </section>
                 <section class="shop_rating_order">
                   <section class="shop_rating_order_left">
-                    <Star :size=24 :score=3.7></Star>
-                    <!-- <div class="star star-24">
-                      <span class="star-item on"></span>
-                      <span class="star-item on"></span>
-                      <span class="star-item on"></span>
-                      <span class="star-item half"></span>
-                      <span class="star-item off"></span>
-                    </div> -->
+                    <Star :size=24 :score="shop.rating"></Star>
                     <div class="rating_section">
                       {{shop.rating}}
                     </div>

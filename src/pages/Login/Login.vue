@@ -38,7 +38,7 @@
               </section>
               <section class="login_message">
                 <input type="text" maxlength="11" placeholder="验证码">
-                <img class="get_verification" src="./images/captcha.svg" alt="captcha">
+                <img class="get_verification" src="/api/captcha" alt="captcha" @click="updateCaptcha" ref="captcha">
               </section>
             </section>
           </div>
@@ -59,7 +59,7 @@
       return{
         isShowSms:true,
         phoneNum:'',
-        isShowPwd:true,
+        isShowPwd:false,
         isCountDown:false,
         count:10,
        // isFirstClick:false,
@@ -77,15 +77,18 @@
         this.isCountDown = true
         const timeId=setInterval(() => {
           // console.log('setInterval',this.count);
-          this.count=this.count-1
+          this.count--
           // console.log('setInterval_after',this.count);
-          if (this.count<0) {
+          if (this.count===0) {
           //  console.log('clear',this.count)
             this.isCountDown = false
             clearInterval(timeId)
             this.count=10
           }
         }, 1000);
+      },
+      updateCaptcha(){
+        this.$refs.captcha.src='/api/captcha?time='+Date.now()
       }
     }
   }

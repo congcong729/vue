@@ -13,8 +13,8 @@
           <div :class="{on:isShowSms}">
             <section class="login_message">
               <input type="tel" maxlength="11" placeholder="手机号" v-model="phoneNum">
-              <button :disabled="!isRightPhone||isCountDown" class="get_verification"
-               :class="{right_phone_number:isRightPhone}" @click.prevent="sendcode">{{isCountDown?`短信已发送(${count}s)`:"获取验证码"}}</button>
+              <button :disabled="!isRightPhone" class="get_verification"
+               :class="{right_phone_number:isRightPhone}" @click.prevent="sendcode">获取验证码</button>
             </section>
             <section class="login_verification">
               <input type="tel" maxlength="8" placeholder="验证码">
@@ -59,10 +59,7 @@
       return{
         isShowSms:true,
         phoneNum:'',
-        isShowPwd:true,
-        isCountDown:false,
-        count:10,
-       // isFirstClick:false,
+        isShowPwd:true
       }
     },
     computed:{
@@ -72,20 +69,7 @@
     },
     methods:{
       sendcode(){
-        //if (this.isFirstClick) return
-        // this.isFirstClick=true
-        this.isCountDown = true
-        const timeId=setInterval(() => {
-          // console.log('setInterval',this.count);
-          this.count=this.count-1
-          // console.log('setInterval_after',this.count);
-          if (this.count<0) {
-          //  console.log('clear',this.count)
-            this.isCountDown = false
-            clearInterval(timeId)
-            this.count=10
-          }
-        }, 1000);
+        alert('qazxsw')
       }
     }
   }

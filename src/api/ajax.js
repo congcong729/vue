@@ -8,7 +8,9 @@
 */
 import axios from 'axios'
 import qs from 'qs'
-import { Indicator } from 'mint-ui'
+import { Indicator, Toast, MessageBox } from 'mint-ui'
+import store from '@/vuex'
+import router from '@/router'
 const instance = axios.create({
   baseURL:'/api',
   timeout:20000
@@ -20,6 +22,14 @@ instance.interceptors.request.use((config)=>{
   if(data instanceof Object){
     config.data = qs.stringify(data)
   }
+  const token = store.state.token
+  if(token){
+    config.headers['Authorization'] = token
+  }else{
+    if(config.headers.needcheck){
+      throw new Error('没有登录，不能请求')
+    }
+  }
   return config
 })
 instance.interceptors.response.use(
@@ -29,7 +39,29 @@ instance.interceptors.response.use(
   },
   (error)=>{
     Indicator.close()
-    alert(error.message)
+    //没发请求
+    const response = error.response
+    if(!response){
+      const path = route.currentRoute.path
+      if(path!=='/login'){
+        router.replace('/login')
+        Toast(error.response.data.message || '登陆失效, 请重新登陆')
+      }
+    }else{
+      if(error.response.status===401){
+        const path = router.currentRoute.path
+        if(path!='/login'){
+          router.replace('/login')
+          Toast(error.message)
+        }
+        
+      }else if(error.response.status===404){
+        MessageBox('提示','访问资源不存在')
+      }else{
+        MessageBox('提示',error.msg)
+      }
+    }
+    
     return new Promise(()=>{})
   }
 )

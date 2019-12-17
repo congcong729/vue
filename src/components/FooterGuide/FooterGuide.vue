@@ -4,25 +4,25 @@
       <span>
         <i class="iconfont icon-waimai"></i>
       </span>
-      <span>外卖</span>
+      <span>{{$t('footer_msite')}}</span>
     </span>
     <span class="guide_item" @click="goto('/search')"  :class="{on:$route.path==='/search'}">
       <span>
         <i class="iconfont icon-search"></i>
       </span>
-      <span>搜索</span>
+      <span>{{$t('footer_search')}}</span>
     </span>
     <span class="guide_item" @click="goto('/order')" :class="{on:$route.path==='/order'}">
       <span>
         <i class="iconfont icon-dingdan"></i>
       </span>
-      <span>订单</span>
+      <span>{{$t('footer_order')}}</span>
     </span>
     <span class="guide_item" @click="goto('/profile')" :class="{on:$route.path==='/profile'}">
       <span>
         <i class="iconfont icon-geren"></i>
       </span>
-      <span>我的</span>
+      <span>{{$t('footer_profile')}}</span>
     </span>
   </footer>
 </template>

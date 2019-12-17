@@ -13,6 +13,7 @@ import FooterGuide from './components/FooterGuide/FooterGuide'
     },
     mounted(){
       this.$store.dispatch('getaddress')
+      this.$store.dispatch('autologin')
     }
   }
 </script>

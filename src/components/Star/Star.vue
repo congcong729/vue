@@ -10,7 +10,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-console.log('star------------------')
   export default {
     props:{
       score:Number,
@@ -23,7 +22,6 @@ console.log('star------------------')
     // },
     computed:{
       starArr(){
-        console.log('star------------------')
         const stars = []
         const {score} = this
         const scoreIntegert = Math.floor(score)
@@ -39,7 +37,6 @@ console.log('star------------------')
             stars.push('off')
           }
         }
-        console.log(stars)
         return stars
       }
     }

@@ -12,12 +12,15 @@
         <form>
           <div :class="{on:isShowSms}">
             <section class="login_message">
-              <input type="tel" maxlength="11" placeholder="手机号" v-model="phoneNum">
-              <button :disabled="!isRightPhone||isCountDown" class="get_verification"
-               :class="{right_phone_number:isRightPhone}" @click.prevent="sendcode">{{isCountDown?`短信已发送(${count}s)`:"获取验证码"}}</button>
+              <input type="tel" maxlength="11" placeholder="手机号" 
+              v-model="phone" name="phone" v-validate="'required|mobile'">
+              <span style="color: red;" v-show="errors.has('phone')">{{ errors.first('phone') }}</span>
+              <button :disabled="!isRightPhone||count>0" class="get_verification" @click.prevent="sendcode" 
+               :class="{right_phone_number:isRightPhone}">{{count>0?`短信已发送(${count}s)`:"获取验证码"}}</button>
             </section>
             <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码">
+              <input type="tel" maxlength="8" placeholder="验证码" v-model="code" name="code" v-validate="{required: true,regex: /^\d{6}$/}" >
+              <span style="color: red;" v-show="errors.has('code')">{{ errors.first('code') }}</span>
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -27,68 +30,113 @@
           <div :class="{on:!isShowSms}">
             <section>
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
+                <input type="tel" maxlength="11" placeholder="用户名"
+                  v-model="name" name="name" v-validate="'required'">
+                <span style="color: red;" v-show="errors.has('name')">{{ errors.first('name') }}</span>  
               </section>
               <section class="login_verification">
-                <input :type="isShowPwd?'text':'password'" maxlength="8" placeholder="密码">
+                <input :type="isShowPwd?'text':'password'" maxlength="8" placeholder="密码"
+                  v-model="pwd" name="pwd" v-validate="'required'">
+                <span style="color: red;" v-show="errors.has('pwd')">{{ errors.first('pwd') }}</span>   
                 <div class="switch_button" :class="isShowPwd?'on':'off'" @click="isShowPwd=!isShowPwd">
                   <div class="switch_circle" :class="{right:isShowPwd}"></div>
                   <span class="switch_text">{{isShowPwd?'abc':''}}</span>
                 </div>
               </section>
               <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码">
+                <input type="text" maxlength="11" placeholder="验证码"
+                 v-model="captcha" name="captcha" v-validate="{required: true,regex: /^[0-9a-zA-Z]{4}$/}">
+                 <span style="color: red;" v-show="errors.has('captcha')">{{ errors.first('captcha') }}</span>
                 <img class="get_verification" src="/api/captcha" alt="captcha" @click="updateCaptcha" ref="captcha">
               </section>
             </section>
           </div>
-          <button class="login_submit">登录</button>
+          <button class="login_submit" @click.prevent="login">{{$t('login')}}</button>
         </form>
         <a href="javascript:;" class="about_us">关于我们</a>
+        <br>
+        <button @click.prevent="toggleLocal">切换语言</button>
       </div>
       <a href="javascript:" class="go_back">
-        <i class="iconfont icon-jiantou2" @click="$router.back()"></i>
+        <i class="iconfont icon-jiantou2" @click="$router.replace('/profile')"></i>
       </a>
     </div>
   </section>
 </template>
 
 <script type="text/ecmascript-6">
+  import { Toast, MessageBox } from 'mint-ui'
   export default {
     data(){
       return{
         isShowSms:true,
         phoneNum:'',
         isShowPwd:false,
-        isCountDown:false,
-        count:10,
-       // isFirstClick:false,
+        count:0,
+        phone:'',
+        code:'',
+        name:'',
+        pwd:'',
+        captcha:''
       }
     },
     computed:{
       isRightPhone(){
-        return /^1\d{10}$/.test(this.phoneNum)
+        return /^1\d{10}$/.test(this.phone)
       }
     },
     methods:{
-      sendcode(){
-        //if (this.isFirstClick) return
-        // this.isFirstClick=true
-        this.isCountDown = true
-        const timeId=setInterval(() => {
-          // console.log('setInterval',this.count);
-          this.count--
-          // console.log('setInterval_after',this.count);
-          if (this.count===0) {
-          //  console.log('clear',this.count)
-            this.isCountDown = false
+      async sendcode(){
+        this.count = 10
+        const timeId = setInterval(() => {
+          this.count=this.count-1
+          if (this.count <= 0) {
             clearInterval(timeId)
-            this.count=10
+            this.count = 0
           }
-        }, 1000);
+        }, 1000)
+        const result = await this.$API.req_sendcode(this.phone)
+        if(result.code===0){
+          Toast('验证码发送成功')
+        }else{
+          this.count = 0
+          MessageBox('提示',result.msg||'验证码发送失败')
+        }
       },
       updateCaptcha(){
         this.$refs.captcha.src='/api/captcha?time='+Date.now()
+      },
+
+      async login () {
+        let names
+        if (this.isShowSms) {
+          names = ['phone','code']
+        }else{
+          names = ['name','pwd','captcha']
+        }
+        const success = await this.$validator.validateAll(names)
+        let result
+        if (success) {
+          //判断是那种登录方式，发相对应的登录请求
+          const {isShowSms,phone,code,name,pwd,captcha} = this
+          if(isShowSms){
+            result = await this.$API.req_loginsms({phone,code})
+          }else{
+            result = await this.$API.req_loginpwd({name,pwd,captcha})
+          }
+          if(result.code===0){
+            const user = result.data
+            this.$store.dispatch('saveuser',user)
+            this.$router.replace('/profile')
+          }else{
+            MessageBox('提示',result.msg)
+          }
+        }
+      },
+      toggleLocal(){
+        const locale = this.$i18n.locale==='zh_CN'?'en':'zh_CN'
+        this.$i18n.locale=locale
+        localStorage.setItem('locale_key',locale)
       }
     }
   }

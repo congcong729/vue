@@ -9,9 +9,12 @@ import i18n from './i18n'
 import './validate'
 import * as API from './api'
 import {Button} from 'mint-ui'
+import './mock/mockserver'
+import CartControl from '@/components/CartControl/CartControl'
 
 Vue.config.productionTip = false
 Vue.component('Header',Header)
+Vue.component('CartControl',CartControl)
 Vue.component(Button.name,Button)
 Vue.prototype.$API = API
 

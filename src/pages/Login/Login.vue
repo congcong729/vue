@@ -114,6 +114,7 @@
         }else{
           names = ['name','pwd','captcha']
         }
+        this.updateCaptcha()
         const success = await this.$validator.validateAll(names)
         let result
         if (success) {

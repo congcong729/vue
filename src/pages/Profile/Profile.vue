@@ -81,6 +81,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+  import {MessageBox} from 'mint-ui' 
   import {mapState} from 'vuex'
   
   export default {
@@ -89,7 +90,14 @@
     },
     methods:{
       logout(){
-        
+         MessageBox.confirm('确定执行此操作?').then(
+           ()=>{
+             this.$store.dispatch('logout')
+           },
+           ()=>{
+             console.log('取消成功')
+           }
+         )
       }
     }
   }

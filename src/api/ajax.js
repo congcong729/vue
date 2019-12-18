@@ -42,17 +42,18 @@ instance.interceptors.response.use(
     //没发请求
     const response = error.response
     if(!response){
-      const path = route.currentRoute.path
+      const path = router.currentRoute.path
       if(path!=='/login'){
         router.replace('/login')
-        Toast(error.response.data.message || '登陆失效, 请重新登陆')
+        Toast(error.message )
       }
     }else{
       if(error.response.status===401){
         const path = router.currentRoute.path
-        if(path!='/login'){
+        if(path!=='/login'){
+          store.dispatch('logout')
           router.replace('/login')
-          Toast(error.message)
+          Toast(error.response.data.message|| '登陆失效, 请重新登陆')
         }
         
       }else if(error.response.status===404){

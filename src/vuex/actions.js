@@ -1,5 +1,27 @@
-import {RECEIVE_ADDRESS,RECEIVE_CATEGORYS,RECEIVE_SHOPS,SAVE_USER,SAVE_TOKEN} from './mutationtypes'
-import {req_address,req_categorys,req_shops,req_autoLogin} from '../api/index.js'
+import {
+  RECEIVE_ADDRESS,
+  RECEIVE_CATEGORYS,
+  RECEIVE_SHOPS,
+  SAVE_USER,
+  SAVE_TOKEN,
+  RESET_USER,
+  RESET_TOKEN,
+  RECEIVE_GOODS,
+  RECEIVE_RATINGS,
+  RECEIVE_INFO,
+  ADD_FOODCOUNT,
+  REDUCE_FOODCOUNT
+} from './mutationtypes'
+
+import {
+  req_address,
+  req_categorys,
+  req_shops,
+  req_autoLogin,
+  req_goods,
+  req_ratings,
+  req_info
+} from '../api/index.js'
 export default {
   async getaddress({commit,state}){
     const {longitude,latitude} = state
@@ -38,6 +60,39 @@ export default {
         const user = result.data
         commit(SAVE_USER,user)
       }
+    }
+  },
+  logout({commit}){
+    localStorage.removeItem('token_key')
+    commit(RESET_USER)
+    commit(RESET_TOKEN)
+  },
+  async getgoods({commit}){
+    const result = await req_goods()
+    if(result.code===0){
+      const goods = result.data
+      commit(RECEIVE_GOODS,{goods})
+     }
+  },
+  async getratings({commit}){
+    const result = await req_ratings()
+    if(result.code===0){
+      const ratings = result.data
+      commit(RECEIVE_RATINGS,{ratings})
+    }
+  },
+  async getinfo({commit}){
+    const result = await req_info()
+    if(result.code===0){
+      const info = result.data
+      commit(RECEIVE_INFO,{info})
+    }
+  },
+  updateFoodCount({commit},{food,isAdd}){
+    if(isAdd){
+      commit(ADD_FOODCOUNT,{food,isAdd})
+    }else{
+      commit(REDUCE_FOODCOUNT,{food})
     }
   }
 }

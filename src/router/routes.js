@@ -8,6 +8,7 @@ import Goods from '@/pages/Shop/Goods'
 import Ratings from '@/pages/Shop/Ratings'
 import Info from '@/pages/Shop/Info'
 
+
 export default [
   {
     path:'/msite',
@@ -56,6 +57,10 @@ export default [
       {
         path:'/shop/info',
         component:Info
+      },
+      {
+        path:'/shop',
+        redirect:'/shop/goods'
       }
     ]
   },

@@ -12,6 +12,12 @@ import {Button} from 'mint-ui'
 import './mock/mockserver'
 import CartControl from '@/components/CartControl/CartControl'
 
+import VueLazyload from 'vue-lazyload'
+import loading from '@/common/images/loading.gif'
+Vue.use(VueLazyload,{
+  loading
+})
+
 Vue.config.productionTip = false
 Vue.component('Header',Header)
 Vue.component('CartControl',CartControl)

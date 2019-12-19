@@ -102,10 +102,17 @@
   import 'swiper/css/swiper.css'
   import chunk from 'lodash/chunk'
   import {mapState} from 'vuex'
-  
+
+
   export default {
     computed:{
-      ...mapState(['address', 'categorys', 'shops']),
+      ...mapState(
+        {
+          address: state => state.msite.address, // state是总状态, 函数的返回就是计算属性值
+          categorys: state => state.msite.categorys, 
+          shops: state => state.msite.shops
+        }
+      ),
       categoryArr (){
         return  chunk(this.categorys,8)
       }
